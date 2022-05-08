@@ -2,7 +2,10 @@
 from google.cloud import speech
 import io
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 
@@ -15,6 +18,9 @@ def chunked():
         output_file = "/Users/johancuda/PycharmProjects/pythonProject/testGoogleCLoud/chunks/chunk{0}.wav".format(i)
         print("Exporting file", output_file)
         chunk.export(output_file, format="wav")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
@@ -30,6 +36,7 @@ def main():
         audio_file=f.read()
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     #audio = speech.RecognitionAudio(content=audio_file)
     audio = speech.RecognitionAudio(uri="gs://montreux_test/355009.wav")
 
@@ -38,20 +45,29 @@ def main():
         audio_channel_count=1,
         enable_automatic_punctuation=True,
 =======
+=======
+>>>>>>> Stashed changes
     audio = speech.RecognitionAudio(content=audio_file)
 
     config = speech.RecognitionConfig(
         language_code="en-US",
         audio_channel_count=1,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     )
     operation = client.long_running_recognize(config=config, audio=audio)
 
     print("Waiting for operation to complete...")
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     response = operation.result()
 
     #status update every 3 minutes for
+=======
+    response = operation.result(timeout=90)
+>>>>>>> Stashed changes
 =======
     response = operation.result(timeout=90)
 >>>>>>> Stashed changes

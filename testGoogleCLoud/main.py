@@ -1,10 +1,22 @@
 # Imports the Google Cloud client library
 from google.cloud import speech_v1
-import io
+from google.cloud import storage
 import asyncio
 
-# Imports the Google Cloud client library
-from google.cloud import storage
+
+def get_file_uri(file_name, bucket_name):
+    """Returns the file's URI"""
+    gcs_uri = 'gs://' + bucket_name + '/' + file_name
+    return gcs_uri
+
+
+def delete_blob(bucket_name, blob_name):
+    """Deletes an audio file from the bucket."""
+    storage_client = storage.Client.from_service_account_json('key.json')
+    bucket = storage_client.get_bucket(bucket_name)
+    audio_file = bucket.blob(blob_name)
+
+    audio_file.delete()
 
 
 def upload_audio(bucket_name, source_file_name, destination_blob_name):
@@ -17,7 +29,7 @@ def upload_audio(bucket_name, source_file_name, destination_blob_name):
     # destination_blob_name = "storage-object-name"
 
     # Instantiates a client
-    storage_client = storage.Client.from_service_account_file('key.json')
+    storage_client = storage.Client.from_service_account_json('key.json')
     bucket = storage_client.bucket(bucket_name)
     audio = bucket.blob(destination_blob_name)
 
@@ -29,20 +41,13 @@ def upload_audio(bucket_name, source_file_name, destination_blob_name):
         )
     )
 
-#async useful or not?
 
+# async useful or not?
 async def speech_to_text_google(uri, language):
     # uri is a string
     # Instantiates a client
     client = speech_v1.SpeechAsyncClient.from_service_account_file('key.json')
 
-    # The name of the audio file to transcribe
-    # file_name = "/Users/johancuda/PycharmProjects/pythonProject/testGoogleCLoud/MJ_test.wav"
-
-    # with io.open(file_name, 'rb') as f:
-    # audio_file=f.read()
-
-    # audio = speech.RecognitionAudio(content=audio_file)
     audio = speech_v1.RecognitionAudio(uri=uri)
 
     config = speech_v1.RecognitionConfig(
@@ -56,24 +61,15 @@ async def speech_to_text_google(uri, language):
 
     response = await operation.result()
 
-
     # status update every 3 minutes for
-
     for result in response.results:
         # The first alternative is the most likely one for this portion.
         print(u"Transcript: {}".format(result.alternatives[0].transcript))
         print("Confidence: {}".format(result.alternatives[0].confidence))
 
-    # Detects speech in the audio file
-    # response = client.recognize(config=config, audio=audio)
-
-    # for result in response.results:
-    # print("Transcript: {}".format(result.alternatives[0].transcript))
-
-    # return print(response)
-
-
+    return response.results
 
 
 if __name__ == "__main__":
     asyncio.run(speech_to_text_google("gs://montreux_test/machine-learning_speech-recognition_7601-291468-0006.wav", "en_US"))
+

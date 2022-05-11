@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "optical-precept-347009",
+  "private_key_id": "f2deda5a496c8b13d3dd89dbf12b920d8aebb7be",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4KiQyR+rBm1KI\n95TPN8RyK8yYLj7x2nqTTn+aiiiXXqrxQe86Z+tfMfKo+Z8vKIMSSovgdOFadDiA\nFqBYDzfl5gCCA6z42b9Zqskao/ANLItpTM2cXJ4wvcAkY9WYMX1g84acEGJZ9Lrf\nUtwQEJXFYIx5O8i7BHEhbw2en/RiiGqOpJkrMWnuOlxvqoudRy4mIxN1tmZJ2k2a\nGObr1ysgRRqWOJGrgDfj2eBbm9oIA1QchfSwKe6nkplHjq/uiomkKQVR4sN70lEO\n89zxwG1tPjZJM7rLMOxeJ6Jp3Ijm2cML4QMqzCfWqURSxxbg+RjO+4qRNf6qmDLi\nU2TlkSnDAgMBAAECggEAVDvWLXdObTpVQFd5ZWQdApl87VgtqyJicTD01WL+2OlQ\nZ6PgP0cb1YE7e8Uc5Y1ykfGt076x+lTxKMjwkwZ26zzNm6oBuhqiVmlyrTAxklz+\n8O1TmAKWyjVoBlzxa7irH6aTOZuW2I1C0fWMuP5U+p/D8ImDMOMBuaiZQqXnug7i\nCndPOEHkxiuvoOJ/PqoQCExiQqVmzCJVZ/1F+F9ofXxnFxXzfySRpUcF+YSW/uNr\nOVpnIqnD2UsrqcqHIy8lmVEALvsbFTNek3BzmgPBI5RYJVZ9mY5EKlTEUTs29kAF\nCS1s6VcOmKz0gHaVvI88SWoTSCa/enRisb5Pqx2QYQKBgQD1dzpzQ5/YC77JEe56\n4B8L8odCM22tE5IT/XMzzJlw/cVVAMbX2arfW8uOTcNy6OOT1duyh/v3Z76SpBIq\ncuRxB2auFDAlBpDSutlPSQfSovD4e+xR8RcqbBhas/qu2NNxk4cB4RZWY2BqEwGQ\nxwkgXgtk863h4rEV2S/cpVmm4wKBgQDAEXANVnnzjRWRUfTbedOd9dvSfzwgg+qr\nfoCx5BeMfwr08ssxg/q4Uzypj973RyPvU5gRUqoGyJ0oukMED7WvHlYLoBIxaarD\nYgC6JDyOLGD2nNHwLDiZWkX72ejEjPNtzQiItH6GRJyB8oG1MyuCsu0KdaKoq1y7\nyT6TbBUHoQKBgHfyuDxFCmIPcz5cJdYjmOhErnXaHbkavCJKkrX4P+7oAzrDc2dc\n9VPKTpEOTPjk9vhx47a9HpJKPuT3iez2Uc0t2a4tLU2ahMCFD9XfkRQMDYbPP67X\nCgPv6ILCOjigucphVfLEJB841o9fFD/EEyCe9CBztz+PgAt2Ix5GKqYTAoGAYHmh\n1iFE2nBYkAkhvAiioip3w3EDq7V3b7L4Q+K1bW32+/jk1bdcfa/ZvbY1ofHK/BD6\nRmFGZGfqgSWmOekGMrNDN02tNcLE8qVMhjNjc2qZPeahkUk1GNp+YrYfNHM0Z0fg\n7IH1N85I6wD75B+S0HC9nk5eaOjCiNTaKMTWf2ECgYEAsoIE4ZJ73hvJKNWGCt8J\nXSzQwb6l+Yd7e2HheGFM0eiFpe17wbx9wVXI7347t9ARO8Cirts4qoSIsavkl2Tv\nFg36TdXF9Z+8Xagdiaqmrq4jLMv/MveVOfVB/d5ZQJtv9khu6HNblQ0vR0MS6vaT\n/XxzyGDO181as5RfxghnQO8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "montreux-jazz-memories@optical-precept-347009.iam.gserviceaccount.com",
+  "client_id": "109409678341284905707",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/montreux-jazz-memories%40optical-precept-347009.iam.gserviceaccount.com"
+}

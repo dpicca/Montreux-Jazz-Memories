@@ -10,7 +10,7 @@ def get_file_uri(file_name, bucket_name):
     return gcs_uri
 
 
-def delete_blob(bucket_name, blob_name):
+async def delete_blob(bucket_name, blob_name):
     """Deletes an audio file from the bucket."""
     storage_client = storage.Client.from_service_account_json('key.json')
     bucket = storage_client.get_bucket(bucket_name)
@@ -18,8 +18,10 @@ def delete_blob(bucket_name, blob_name):
 
     audio_file.delete()
 
+    print("File deleted")
 
-def upload_audio(bucket_name, source_file_name, destination_blob_name):
+
+async def upload_audio(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the bucket."""
     # The ID of your GCS bucket
     # bucket_name = "your-bucket-name"
@@ -40,14 +42,22 @@ def upload_audio(bucket_name, source_file_name, destination_blob_name):
             source_file_name, destination_blob_name
         )
     )
+    return destination_blob_name
 
 
 # async useful or not?
-async def speech_to_text_google(uri, language):
+async def speech_to_text_google(language):
     # uri is a string
     # Instantiates a client
     client = speech_v1.SpeechAsyncClient.from_service_account_file('key.json')
 
+    # Uploads the audio
+
+    print("Waiting for upload...")
+
+    file_name = await upload_audio("montreux_test", "/Users/johancuda/PycharmProjects/pythonProject/testGoogleCLoud/OSR_us_000_0010_8k.wav", "test2.wav")
+    # Gets uri
+    uri = get_file_uri(file_name, "montreux_test")
     audio = speech_v1.RecognitionAudio(uri=uri)
 
     config = speech_v1.RecognitionConfig(
@@ -67,9 +77,11 @@ async def speech_to_text_google(uri, language):
         print(u"Transcript: {}".format(result.alternatives[0].transcript))
         print("Confidence: {}".format(result.alternatives[0].confidence))
 
+    await delete_blob("montreux_test", file_name)
+
     return response.results
 
 
 if __name__ == "__main__":
-    asyncio.run(speech_to_text_google("gs://montreux_test/machine-learning_speech-recognition_7601-291468-0006.wav", "en_US"))
+    asyncio.run(speech_to_text_google("en_US"))
 

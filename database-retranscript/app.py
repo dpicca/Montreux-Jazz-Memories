@@ -91,19 +91,14 @@ async def speech_to_text_google(file, language):
     # return response.results
     return 'youpi youpos'
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def convertToBinaryData(filename):
-    # Convert digital data to binary format
-    with open(filename, 'rb') as file:
-        binary_data = file.read()
-    return binary_data
-
 
 def insertBLOB(name, empAudio):
-    print("Inserting BLOB into python_employee table")
+    print("Inserting Audio file and its transcription to interview table")
     try:
         connection = mysql.connector.connect(host='localhost',
                                              port='8889',
@@ -118,7 +113,7 @@ def insertBLOB(name, empAudio):
         insert_blob_tuple = (name, empAudio)
         result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
         connection.commit()
-        print("Retranscription and audio file successfully uploaded to database", result)
+        print("Transcription and audio file successfully uploaded to database", result)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -138,17 +133,16 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
+        # "en_US" is supposed to be replaced by a language selection on the web page
+        results = asyncio.run(speech_to_text_google(file, "en_US"))
         if file and allowed_file(file.filename):
             binary_audio = file.read()
-            results = asyncio.run(speech_to_text_google(file, "en_US"))
             insertBLOB(results, binary_audio)
-
 
     return render_template('upload_revamp.html')
 

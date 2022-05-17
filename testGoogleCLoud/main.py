@@ -46,7 +46,7 @@ async def upload_audio(bucket_name, source_file_name, destination_blob_name):
 
 
 # async useful or not?
-async def speech_to_text_google(language):
+async def speech_to_text_google(file, language):
     # uri is a string
     # Instantiates a client
     client = speech_v1.SpeechAsyncClient.from_service_account_file('key.json')
@@ -55,7 +55,7 @@ async def speech_to_text_google(language):
 
     print("Waiting for upload...")
 
-    file_name = await upload_audio("montreux_test", "/Users/johancuda/PycharmProjects/pythonProject/testGoogleCLoud/OSR_us_000_0010_8k.wav", "test2.wav")
+    file_name = await upload_audio("montreux_test", file, "test2.wav")
     # Gets uri
     uri = get_file_uri(file_name, "montreux_test")
     audio = speech_v1.RecognitionAudio(uri=uri)
@@ -70,18 +70,22 @@ async def speech_to_text_google(language):
     print("Waiting for operation to complete...")
 
     response = await operation.result()
+    # Creating output
+    transcription = ""
 
     # status update every 3 minutes for
     for result in response.results:
         # The first alternative is the most likely one for this portion.
+        transcription += result.alternatives[0].transcript
         print(u"Transcript: {}".format(result.alternatives[0].transcript))
         print("Confidence: {}".format(result.alternatives[0].confidence))
 
     await delete_blob("montreux_test", file_name)
 
-    return response.results
+    # TODO: return transcription as text
+    return transcription
 
 
 if __name__ == "__main__":
-    asyncio.run(speech_to_text_google("en_US"))
+    asyncio.run(speech_to_text_google("/Users/johancuda/PycharmProjects/pythonProject/testGoogleCLoud/OSR_us_000_0010_8k.wav", "en_US"))
 

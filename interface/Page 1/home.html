@@ -1,0 +1,221 @@
+import React from "react"
+import Logo from "./Logo"
+import Input from "./Input"
+import ListboxComponent from "./ListboxComponent"
+import NextButton from "./NextButton"
+import BlueBarre from "./BlueBarre"
+
+import separator from "./separator.svg"
+import contextBox from "./contextBox.svg"
+
+const App = (props) => {
+  return (
+    <div>
+      <div className="div-2">
+        <div className="div-3">
+          <div className="div-4">
+            <div className="div-5">
+              <Logo />
+              <div className="div-6">
+                <div className="div-7">
+                  <span className="span-1">Google storage URL</span>
+                  <Input />
+                </div>
+                <div className="div-8">
+                  <span className="span-2">Quality control</span>
+                  <Input />
+                </div>
+                <ListboxComponent num1="English" />
+                <div className="div-9">
+                  <span className="span-3">Date of interview</span>
+                  <Input />
+                </div>
+              </div>
+            </div>
+            <img className="img-1" src={separator} />
+            <div className="div-10">
+              <div className="div-11">
+                <span className="span-4">Place</span>
+                <Input />
+              </div>
+              <span className="span-3">Context</span>
+              <img className="textfield-2" src={contextBox} />
+            </div>
+          </div>
+          <NextButton next="Next" />
+        </div>
+        <BlueBarre />
+      </div>
+    </div>
+  )
+}
+export default App
+
+<style>
+.div-2 {
+	 height: 100%;
+	 justify-content: flex-start;
+	 width: 100%;
+	 flex-direction: column;
+	 row-gap: 36px;
+	 align-items: start;
+	 min-height: 1024px;
+	 display: flex;
+	 max-width: 1440px;
+	 background-color: #ffffff;
+}.div-3 {
+	 justify-content: flex-start;
+	 margin-top: 0px;
+	 width: 100%;
+	 flex-direction: column;
+	 row-gap: 16px;
+	 align-items: end;
+	 margin-right: 0px;
+	 margin-bottom: 0px;
+	 display: flex;
+	 flex-basis: 914px;
+	 margin-left: 0px;
+	 height: 80%;
+}.div-4 {
+	 margin-left: 0px;
+	 height: 100%;
+	 color: #000000;
+	 column-gap: 64px;
+	 flex-basis: 848px;
+	 margin-top: 0px;
+	 width: 100%;
+	 align-items: center;
+	 font-size: 16px;
+	 margin-right: 64px;
+	 margin-bottom: 0px;
+	 display: flex;
+	 font-weight: 400;
+	 justify-content: space-between;
+	 line-height: 18px;
+	 flex-direction: row;
+}.div-5 {
+	 height: 100%;
+	 justify-content: flex-start;
+	 margin-top: 0px;
+	 flex-direction: column;
+	 margin-right: 0px;
+	 align-items: start;
+	 margin-bottom: 0px;
+	 display: flex;
+	 flex-basis: 599px;
+	 row-gap: 4px;
+	 margin-left: 0px;
+}
+.div-6 {
+	 flex-basis: 613px;
+	 margin-top: 0px;
+	 flex-direction: column;
+	 margin-right: 0px;
+	 align-items: start;
+	 height: 70%;
+	 margin-bottom: 0px;
+	 row-gap: 21px;
+	 display: flex;
+	 justify-content: space-between;
+	 margin-left: 64px;
+}.div-7 {
+	 justify-content: flex-start;
+	 row-gap: 3px;
+	 margin-top: 0px;
+	 flex-basis: 83px;
+	 width: 100%;
+	 flex-direction: column;
+	 margin-right: 0px;
+	 align-items: start;
+	 margin-bottom: 0px;
+	 display: flex;
+	 margin-left: 0px;
+}.span-1 {
+	 margin-top: 0px;
+	 margin-left: 10px;
+	 margin-right: 0px;
+	 margin-bottom: 0px;
+	 flex-basis: 19px;
+}
+.div-8 {
+	 justify-content: flex-start;
+	 row-gap: 3px;
+	 margin-top: 0px;
+	 width: 100%;
+	 flex-direction: column;
+	 margin-right: 0px;
+	 align-items: start;
+	 margin-bottom: 0px;
+	 display: flex;
+	 margin-left: 0px;
+	 flex-basis: 82px;
+}.span-2 {
+	 margin-top: 0px;
+	 flex-basis: 18px;
+	 margin-right: 0px;
+	 margin-left: 9px;
+	 margin-bottom: 0px;
+}
+.div-9 {
+	 justify-content: flex-start;
+	 margin-top: 0px;
+	 width: 100%;
+	 flex-direction: column;
+	 row-gap: 5px;
+	 margin-left: 10px;
+	 margin-right: 0px;
+	 align-items: start;
+	 margin-bottom: 0px;
+	 display: flex;
+	 flex-basis: 82px;
+}.span-3 {
+	 margin-top: 0px;
+	 flex-basis: 16px;
+	 margin-right: 0px;
+	 margin-bottom: 0px;
+	 margin-left: 11px;
+}
+.img-1 {
+	 flex-basis: 1px;
+	 width: 1px;
+	 height: 732px;
+}
+.div-10 {
+	 flex-basis: 449px;
+	 margin-top: 0px;
+	 flex-direction: column;
+	 margin-right: 0px;
+	 align-items: start;
+	 margin-bottom: 0px;
+	 display: flex;
+	 justify-content: space-between;
+	 margin-left: 0px;
+	 row-gap: 23px;
+}.div-11 {
+	 justify-content: flex-start;
+	 margin-top: 0px;
+	 flex-direction: column;
+	 row-gap: -3px;
+	 margin-right: 0px;
+	 align-items: start;
+	 flex-basis: 74px;
+	 margin-bottom: 0px;
+	 display: flex;
+	 margin-left: 0px;
+}.span-4 {
+	 margin-top: 0px;
+	 flex-basis: 16px;
+	 margin-right: 0px;
+	 margin-bottom: 0px;
+	 margin-left: 12px;
+}
+.textfield-2 {
+	 margin-top: 0px;
+	 margin-right: 0px;
+	 flex-basis: 282px;
+	 margin-bottom: 0px;
+	 height: 282px;
+	 width: 438px;
+	 margin-left: 11px;
+}
+</style>

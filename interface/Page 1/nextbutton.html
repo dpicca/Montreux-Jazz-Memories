@@ -1,0 +1,32 @@
+import React from "react"
+
+const NextButton = (props) => {
+  return (
+    <div className="button-nav-23">
+      <span className="span-9">{props.next || "Next"}</span>
+    </div>
+  )
+}
+export default NextButton
+
+<style>
+.button-nav-23 {
+  padding-top: 15px;
+  background-color: #2d9cdb;
+  border-radius: 5px;
+  padding-bottom: 17px;
+  min-height: 50px;
+  align-self: stretch;
+  flex-basis: 50px;
+  max-width: 78px;
+  padding-right: 20px;
+  padding-left: 18px;
+}
+.span-9 {
+  font-size: 20px;
+  text-align: center;
+  line-height: 28px;
+  color: #ffffff;
+  font-weight: 400;
+}
+</style>

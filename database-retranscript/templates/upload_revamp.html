@@ -1,7 +1,31 @@
 <!doctype html>
-    <title>Upload</title>
+    <title>Transcription</title>
     <h1>Choose a file</h1>
     <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
+    <!--Interview-->
+      <label for="audio">Choose an audio file to transcript:</label> <br>
+      <input type=file name=audio> <br>
+    <!--Technical MetaData-->
+      <label for="json">Choose the related MediaInfo file:</label> <br>
+      <input type=file name=json> <br>
+    <!--Descriptive MetaData-->
+      <label for="interviewee">Name Interviewee:</label> <br>
+      <input type=text id="interviewee" name="interviewee"> <br>
+      <label for="interviewer">Name Interviewer:</label> <br>
+      <input type=text id="interviewer" name=interviewer> <br>
+      <label for="location">Location of the interview:</label> <br>
+      <input type=text id="location" name=location> <br>
+      <label for="Idate">Date of the interview:</label> <br>
+      <input type=date id="Idate" name=Idate> <br>
+      <label for="context">Context of the interview:</label> <br>
+      <textarea id="context" name="context" rows="10" cols="75"></textarea> <br>
+    <!--Technical MetaData-->
+      <label for="language">Language of the interview:</label> <br>
+      <select id="language" name="language">
+          <option value="fr_FR">French</option>
+          <option value="en_US">English (US)</option>
+      </select>
+
+
+      <input type=submit value=Transcribe>
     </form>

@@ -1,16 +1,19 @@
 from flask import *
+import os
+from werkzeug.utils import secure_filename
 import mysql.connector
 from google.cloud import speech_v1
 from google.cloud import storage
 import asyncio
+import datetime
 
 
-UPLOAD_FOLDER = './uploads'
-ALLOWED_EXTENSIONS = {'wav'}
+AUDIO_EXTENSIONS = {'wav'}
+JSON_EXTENSION = {'json'}
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SECRET_KEY'] = 'DataBasic$'
+app.config['UPLOAD_FOLDER'] = './uploads'
 
 
 def get_file_uri(file_name, bucket_name):
@@ -79,25 +82,28 @@ async def speech_to_text_google(file, language):
     print("Waiting for operation to complete...")
 
     response = await operation.result()
+    # Creating output
+    transcription = ""
 
     # status update every 3 minutes for
     for result in response.results:
         # The first alternative is the most likely one for this portion.
+        transcription += result.alternatives[0].transcript
         print(u"Transcript: {}".format(result.alternatives[0].transcript))
         print("Confidence: {}".format(result.alternatives[0].confidence))
 
     await delete_blob("montreux_test", file_name)
 
-    # return response.results
-    return 'youpi youpos'
+    # TODO: return transcription as text
+    return transcription
 
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in AUDIO_EXTENSIONS
 
 
-def insertBLOB(name, empAudio):
+def insert_interview(text, transcription, audio):
     print("Inserting Audio file and its transcription to interview table")
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -107,13 +113,47 @@ def insertBLOB(name, empAudio):
                                              database='mydb')
 
         cursor = connection.cursor()
-        sql_insert_blob_query = """ INSERT INTO interview (Text, Audio) VALUES (%s, %s)"""
+        sql_insert_interview = """ INSERT INTO interview (Text, Transcription, Audio) VALUES (%s, %s, %s)"""
+        insert_interview_data = (text, transcription, audio)
+        result_interview = cursor.execute(sql_insert_interview, insert_interview_data)
 
-        # Convert data into tuple format
-        insert_blob_tuple = (name, empAudio)
-        result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
         connection.commit()
-        print("Transcription and audio file successfully uploaded to database", result)
+        print("Transcription and audio file successfully uploaded to database", result_interview)
+
+    except mysql.connector.Error as error:
+        print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+
+
+def insert_metadata(name_interviewee, name_interviewer, location, date, context, file_name, audio_length, file_format,
+                    language, mediainfo):
+    print("Inserting Audio file and its transcription to interview table")
+    try:
+        connection = mysql.connector.connect(host='localhost',
+                                             port='8889',
+                                             user='root',
+                                             password='root',
+                                             database='mydb')
+
+        cursor = connection.cursor()
+
+        sql_insert_descriptive = """ INSERT INTO `descriptive metadata` (idDescriptive_MetaData, Name_Interviewee,
+         `Name Interviewer.s`, Location, Date, Context) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
+        insert_descriptive_data = (name_interviewee, name_interviewer, location, date, context)
+        result_descriptive = cursor.execute(sql_insert_descriptive, insert_descriptive_data)
+
+        sql_insert_technical = """INSERT INTO `technical metadata` (idTechnical_MetaData, FileName, AudioFile_Length,
+         Format, Language, MediaInfo) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
+        insert_technical_data = (file_name, audio_length, file_format, language, mediainfo)
+        result_technical = cursor.execute(sql_insert_technical, insert_technical_data)
+
+        connection.commit()
+        print("Transcription and audio file successfully uploaded to database",result_descriptive, result_technical)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -129,20 +169,43 @@ def insertBLOB(name, empAudio):
 def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'audio' not in request.files:
+            print('missing file')
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
+        file = request.files['audio']
+        minfo = request.files['json']
+        language = request.form['language']
+        name_interviewee = request.form['interviewee']
+        name_interviewer = request.form['interviewer']
+        location = request.form['location']
+        form_date = request.form.get('Idate')
+        date = datetime.datetime.strptime(form_date, '%Y-%m-%d')
+        context = request.form['context']
+        file_format = file.filename.split('.')[1]
+        # get audio file duration from json file
+        duration = 2.9
+
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
-            flash('No selected file')
+            flash('Missing file')
             return redirect(request.url)
         # "en_US" is supposed to be replaced by a language selection on the web page
-        results = asyncio.run(speech_to_text_google(file, "en_US"))
+        results = asyncio.run(speech_to_text_google(file, language))
         if file and allowed_file(file.filename):
-            binary_audio = file.read()
-            insertBLOB(results, binary_audio)
+            filename = secure_filename(file.filename)
+            minfo_name = secure_filename(minfo.filename)
+            os.mkdir('./uploads/' + filename.split('.')[0])
+            app.config['FOLDER_PATH'] = './uploads/' + filename.split('.')[0]
+            file.save(os.path.join(app.config['FOLDER_PATH'], filename))
+            file.save(os.path.join(app.config['FOLDER_PATH'], minfo_name))
+            filepath = app.config['FOLDER_PATH'] + '/' + filename
+            jsonpath = app.config['FOLDER_PATH'] + '/' + minfo_name
+
+            insert_interview(results, results, filepath)
+            insert_metadata(name_interviewee, name_interviewer, location, date, context, filename, duration,
+                            file_format, language, jsonpath)
 
     return render_template('upload_revamp.html')
 

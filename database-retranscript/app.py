@@ -67,7 +67,7 @@ async def speech_to_text_google(file, language):
 
     print("Waiting for upload...")
 
-    file_name = await upload_audio("montreux_test", file, "test2.wav")
+    file_name = await upload_audio("montreux_test", file, "temporary folder")
     # Gets uri
     uri = get_file_uri(file_name, "montreux_test")
     audio = speech_v1.RecognitionAudio(uri=uri)
@@ -113,7 +113,7 @@ def insert_interview(text, transcription, audio):
                                              database='mydb')
 
         cursor = connection.cursor()
-        sql_insert_interview = """ INSERT INTO interview (Text, Transcription, Audio) VALUES (%s, %s, %s)"""
+        sql_insert_interview = """ INSERT INTO interview (text, transcription, audio) VALUES (%s, %s, %s)"""
         insert_interview_data = (text, transcription, audio)
         result_interview = cursor.execute(sql_insert_interview, insert_interview_data)
 
@@ -132,7 +132,7 @@ def insert_interview(text, transcription, audio):
 
 def insert_metadata(name_interviewee, name_interviewer, location, date, context, file_name, audio_length, file_format,
                     language, mediainfo):
-    print("Inserting Audio file and its transcription to interview table")
+    print("Inserting Meta Data")
     try:
         connection = mysql.connector.connect(host='localhost',
                                              port='8889',
@@ -142,13 +142,13 @@ def insert_metadata(name_interviewee, name_interviewer, location, date, context,
 
         cursor = connection.cursor()
 
-        sql_insert_descriptive = """ INSERT INTO `descriptive metadata` (idDescriptive_MetaData, Name_Interviewee,
-         `Name Interviewer.s`, Location, Date, Context) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
+        sql_insert_descriptive = """ INSERT INTO descriptive_metadata (id, name_interviewee, name_interviewer, 
+        location, date, context) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
         insert_descriptive_data = (name_interviewee, name_interviewer, location, date, context)
         result_descriptive = cursor.execute(sql_insert_descriptive, insert_descriptive_data)
 
-        sql_insert_technical = """INSERT INTO `technical metadata` (idTechnical_MetaData, FileName, AudioFile_Length,
-         Format, Language, MediaInfo) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
+        sql_insert_technical = """INSERT INTO technical_metadata (id, file_name, file_length, format, language,
+         media_info) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
         insert_technical_data = (file_name, audio_length, file_format, language, mediainfo)
         result_technical = cursor.execute(sql_insert_technical, insert_technical_data)
 

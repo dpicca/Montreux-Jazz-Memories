@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`descriptive_metadata` (
   `location` VARCHAR(45) NULL COMMENT 'location of the interview',
   `date` DATE NOT NULL,
   `context` VARCHAR(45) NULL COMMENT 'context in which the interview was made\n',
+  `gender_interviewee` VARCHAR(45) NULL,
+  `gender_interviewer` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_descriptive_metadata_interview`
     FOREIGN KEY (`id`)

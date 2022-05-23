@@ -1,13 +1,14 @@
 <!doctype html>
+<html lang="en">
     <title>Transcription</title>
     <h1>Choose a file</h1>
     <form method=post enctype=multipart/form-data>
     <!--Interview-->
       <label for="audio">Choose an audio file to transcript:</label> <br>
-      <input type=file name=audio> <br>
+      <input type=file name=audio accept=".wav"> <br>
     <!--Technical MetaData-->
       <label for="json">Choose the related MediaInfo file:</label> <br>
-      <input type=file name=json> <br>
+      <input type=file name=json accept=".json"> <br>
     <!--Descriptive MetaData-->
       <label for="interviewee">Name Interviewee:</label> <br>
       <input type=text id="interviewee" name="interviewee"> <br>

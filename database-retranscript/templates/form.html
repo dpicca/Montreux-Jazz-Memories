@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Montreux Jazz form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  </head>
+  <body>
+  <form>
+  <br/>
+  <br/>
+        <div class="container">
+             <img src="{{url_for('static', filename='MJM_logo.png')}}" align="middle" />
+        </div>
+        <br/>
+        <br/>
+        <div class="container">
+            <h6>Choose an audio file to transcript:</h6>
+            <div class="input-group mb-2">
+                <input type="file" class="form-control" name="audio" id="audio">
+            </div>
+        </div>
+        <div class="container">
+            <h6>Choose the associated MediaInfo file:</h6>
+            <div class="input-group mb-2">
+                <input type="file" class="form-control" name="json" id="json">
+            </div>
+        </div>
+        <br/>
+        <div class="container">
+              <div class="col">
+                  <input type="date" class="form-control" aria-label="Date of interview" name="Idate" id="Idate">
+              </div>
+        </div>
+        <br/>
+        <div class="container">
+            <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="language"
+                    id="language">
+                <option selected>Choose a language</option>
+                  <option value="fr_FR">French</option>
+                  <option value="en_US">English(US)</option>
+                  <option value="de_DE">German</option>
+                  <option value="it_IT">Italian</option>
+
+            </select>
+        </div>
+        <br/>
+        <div class="container">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Place" aria-label="Place" name="location" id="location">
+              </div>
+        </div>
+        <br/>
+        <div class="container">
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" rows="10"
+                          name="context" id="context"></textarea>
+                <label for="floatingTextarea">Context</label>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div class="container">
+            <h6>Interviewee</h6>
+            <div class="row g-3">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="First name" aria-label="First name" name="interviewee_fname"
+                       id="interviewee_fname">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" name="interviewee_lname"
+                       id="interviewee_lname">
+              </div>
+                <div>
+                     <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option selected>Choose the genre</option>
+                        <option value="1">Woman</option>
+                        <option value="2">Man</option>
+                        <option value="3">Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="container">
+            <h6>Interviewer</h6>
+            <div class="row g-3">
+              <div class="col">
+                <input type="text" class="form-control" placeholder="First name" aria-label="First name" name="interviewer_fname"
+                       id="interviewer_fname">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" placeholder="Last name" aria-label="Last name" name="interviewer_lname"
+                       id="interviewer_lname">
+              </div>
+                <div>
+                     <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                        <option selected>Choose the genre</option>
+                        <option value="1">Woman</option>
+                        <option value="2">Man</option>
+                        <option value="3">Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div class="container">
+          <button type="submit" class="btn btn-light">Transcribe</button>
+        </div>
+        <br/>
+  <div class="p-4 bg-info rounded-top">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </div>
+  </form>
+  </body>
+</html>
+
+

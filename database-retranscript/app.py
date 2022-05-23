@@ -6,6 +6,7 @@ from google.cloud import speech_v1
 from google.cloud import storage
 import asyncio
 import datetime
+from pathlib import Path
 
 
 AUDIO_EXTENSIONS = {'wav'}
@@ -170,9 +171,15 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'audio' not in request.files:
-            print('missing file')
+            print('missing audio file')
             flash('No file part')
             return redirect(request.url)
+
+        if 'json' not in request.files:
+            print('missing audio file')
+            flash('No file part')
+            return redirect(request.url)
+
         file = request.files['audio']
         minfo = request.files['json']
         language = request.form['language']
@@ -196,8 +203,8 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             minfo_name = secure_filename(minfo.filename)
-            os.mkdir('./uploads/' + filename.split('.')[0])
-            app.config['FOLDER_PATH'] = './uploads/' + filename.split('.')[0]
+            Path('./uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
+            app.config['FOLDER_PATH'] = Path('./uploads/' + filename.split('.')[0]).as_posix()
             file.save(os.path.join(app.config['FOLDER_PATH'], filename))
             file.save(os.path.join(app.config['FOLDER_PATH'], minfo_name))
             filepath = app.config['FOLDER_PATH'] + '/' + filename
@@ -206,8 +213,40 @@ def upload_file():
             insert_interview(results, results, filepath)
             insert_metadata(name_interviewee, name_interviewer, location, date, context, filename, duration,
                             file_format, language, jsonpath)
+            # redirect(url_for('transcriptions/' + select_interview()))
 
     return render_template('upload_revamp.html')
+
+
+@app.route('/transcriptions/<date>/<name>', methods=['GET', 'POST'])
+def update_text(interview_id):
+    def select_interview():
+        print("Retrieving interview ID")
+        interview_name = request.form('interview_search')
+        try:
+            connection = mysql.connector.connect(host='localhost',
+                                                 port='8889',
+                                                 user='root',
+                                                 password='root',
+                                                 database='mydb')
+
+            cursor = connection.cursor()
+            sql_select_interview = """SELECT MAX(id) FROM interview"""
+            selected_interview = cursor.execute(sql_select_interview)
+
+            connection.commit()
+            return selected_interview
+
+        except mysql.connector.Error as error:
+            print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+    interview_id = request.args.get('id')
+    return render_template('transcription.html')
 
 
 if __name__ == '__main__':

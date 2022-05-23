@@ -60,7 +60,7 @@ async def upload_audio(bucket_name, source_file_name, destination_blob_name):
 
 
 # async useful or not?
-async def speech_to_text_google(file, language, filename):
+async def speech_to_text_google(file, language, filename, minfo_channels):
     # uri is a string
     # Instantiates a client
     client = speech_v1.SpeechAsyncClient.from_service_account_file('key.json')
@@ -76,7 +76,7 @@ async def speech_to_text_google(file, language, filename):
 
     config = speech_v1.RecognitionConfig(
         language_code=language,
-        audio_channel_count=1,
+        audio_channel_count=int(minfo_channels),
         enable_automatic_punctuation=True,
     )
     operation = await client.long_running_recognize(config=config, audio=audio)
@@ -184,6 +184,7 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
 
+        # Makes Flask requests to access form inputs
         file = request.files['audio']
         minfo = request.files['json']
         language = request.form['language']
@@ -198,8 +199,14 @@ def upload_file():
         date = datetime.datetime.strptime(form_date, '%Y-%m-%d')
         context = request.form['context']
         file_format = file.filename.split('.')[1]
-        # get audio file duration from json file
-        duration = 2.9
+        # Opens and reads the json file to extract useful information
+        # Audio duration
+        read_minfo = json.loads(minfo.read())
+        minfo_duration = read_minfo['media']['track'][0]['Duration']
+        converted_duration = str(datetime.timedelta(seconds=float(minfo_duration)))
+        duration = converted_duration
+        # Number of recording channels
+        minfo_channels = read_minfo['media']['track'][1]['Channels']
 
         # if user does not select file, browser also
         # submit an empty part without filename
@@ -208,7 +215,7 @@ def upload_file():
             return redirect(request.url)
         # "en_US" is supposed to be replaced by a language selection on the web page
         filename = secure_filename(file.filename)
-        results = asyncio.run(speech_to_text_google(file, language, filename))
+        results = asyncio.run(speech_to_text_google(file, language, filename, minfo_channels))
         if file and allowed_file(file.filename):
             minfo_name = secure_filename(minfo.filename)
             Path('./uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
@@ -225,38 +232,7 @@ def upload_file():
                             lname_interviewer, gender_interviewer, location, date, context, filename, duration,
                             file_format, language, jsonpath)
 
-    return render_template('upload_revamp.html')
-
-
-@app.route('/transcriptions/<date>/<name>', methods=['GET', 'POST'])
-def update_text(interview_id):
-    def select_interview():
-        print("Retrieving interview ID")
-        interview_name = request.form('interview_search')
-        try:
-            connection = mysql.connector.connect(host='localhost',
-                                                 port='8889',
-                                                 user='root',
-                                                 password='root',
-                                                 database='mydb')
-
-            cursor = connection.cursor()
-            sql_select_interview = """SELECT MAX(id) FROM interview"""
-            selected_interview = cursor.execute(sql_select_interview)
-
-            connection.commit()
-            return selected_interview
-
-        except mysql.connector.Error as error:
-            print("Failed inserting BLOB data into MySQL table {}".format(error))
-
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-                print("MySQL connection is closed")
-    interview_id = request.args.get('id')
-    return render_template('transcription.html')
+    return render_template('transcription_page.html')
 
 
 @app.route('/search', methods=['GET', 'POST'])
@@ -273,13 +249,19 @@ def search():
             research = request.form['name']
             # search name of file
             # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
-            cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer, last_name_interviewer, date, location, context, audio, transcription from descriptive_metadata, interview where interview.id = descriptive_metadata.id group by descriptive_metadata.id")
+            cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
+                           " last_name_interviewer, date, location, context, audio, transcription from"
+                           " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
+                           " descriptive_metadata.id")
             # boucle for pour récupérer les valeurs et les afficher
             connection.commit()
             data = cursor.fetchall()
             # all in the search box will return all the tuples
             if len(data) == 0 and research == 'all':
-                cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer, last_name_interviewer, date, location, context, audio, transcription from descriptive_metadata, interview where interview.id = descriptive_metadata.id group by descriptive_metadata.id")
+                cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
+                               " last_name_interviewer, date, location, context, audio, transcription from"
+                               " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
+                               " descriptive_metadata.id")
                 connection.commit()
                 data = cursor.fetchall()
             return render_template('search.html', data=data)

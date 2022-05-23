@@ -1,0 +1,21 @@
+<!-- Search Bar -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-
+        scale=1">
+    </head>
+    <body>
+        <form  method=post enctype="multipart/form-data">
+            <input type=text placeholder="Search by name" name=name>
+            <input type=submit value=Search>
+        </form>
+        <p></p>
+        {% for item in data %}
+            <tr>
+                <td> {{item}}</td>
+                </br>
+            </tr>
+        {% endfor %}
+    </body>
+</html>

@@ -60,7 +60,7 @@ async def upload_audio(bucket_name, source_file_name, destination_blob_name):
 
 
 # async useful or not?
-async def speech_to_text_google(file, language):
+async def speech_to_text_google(file, language, filename):
     # uri is a string
     # Instantiates a client
     client = speech_v1.SpeechAsyncClient.from_service_account_file('key.json')
@@ -69,7 +69,7 @@ async def speech_to_text_google(file, language):
 
     print("Waiting for upload...")
 
-    file_name = await upload_audio("montreux_test", file, "temporary folder")
+    file_name = await upload_audio("montreux_test", file, filename)
     # Gets uri
     uri = get_file_uri(file_name, "montreux_test")
     audio = speech_v1.RecognitionAudio(uri=uri)
@@ -207,9 +207,9 @@ def upload_file():
             flash('Missing file')
             return redirect(request.url)
         # "en_US" is supposed to be replaced by a language selection on the web page
-        results = asyncio.run(speech_to_text_google(file, language))
+        filename = secure_filename(file.filename)
+        results = asyncio.run(speech_to_text_google(file, language, filename))
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
             minfo_name = secure_filename(minfo.filename)
             Path('./uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
             app.config['FOLDER_PATH'] = Path('./uploads/' + filename.split('.')[0]).as_posix()
@@ -226,6 +226,73 @@ def upload_file():
                             file_format, language, jsonpath)
 
     return render_template('upload_revamp.html')
+
+
+@app.route('/transcriptions/<date>/<name>', methods=['GET', 'POST'])
+def update_text(interview_id):
+    def select_interview():
+        print("Retrieving interview ID")
+        interview_name = request.form('interview_search')
+        try:
+            connection = mysql.connector.connect(host='localhost',
+                                                 port='8889',
+                                                 user='root',
+                                                 password='root',
+                                                 database='mydb')
+
+            cursor = connection.cursor()
+            sql_select_interview = """SELECT MAX(id) FROM interview"""
+            selected_interview = cursor.execute(sql_select_interview)
+
+            connection.commit()
+            return selected_interview
+
+        except mysql.connector.Error as error:
+            print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print("MySQL connection is closed")
+    interview_id = request.args.get('id')
+    return render_template('transcription.html')
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    try:
+        connection = mysql.connector.connect(host='localhost',
+                                             port='8889',
+                                             user='root',
+                                             password='root',
+                                             database='mydb')
+
+        cursor = connection.cursor(buffered=True)
+        if request.method == "POST":
+            research = request.form['name']
+            # search name of file
+            # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
+            cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer, last_name_interviewer, date, location, context, audio, transcription from descriptive_metadata, interview where interview.id = descriptive_metadata.id group by descriptive_metadata.id")
+            # boucle for pour récupérer les valeurs et les afficher
+            connection.commit()
+            data = cursor.fetchall()
+            # all in the search box will return all the tuples
+            if len(data) == 0 and research == 'all':
+                cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer, last_name_interviewer, date, location, context, audio, transcription from descriptive_metadata, interview where interview.id = descriptive_metadata.id group by descriptive_metadata.id")
+                connection.commit()
+                data = cursor.fetchall()
+            return render_template('search.html', data=data)
+
+    except mysql.connector.Error as error:
+        print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+    return render_template('search.html')
 
 
 if __name__ == '__main__':

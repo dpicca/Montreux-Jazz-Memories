@@ -31,8 +31,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`descriptive_metadata` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name_interviewee` VARCHAR(45) NOT NULL COMMENT 'name of the interviewee',
-  `name_interviewer` VARCHAR(45) NULL COMMENT 'name of the interviewer of interviewers',
+  `first_name_interviewee` VARCHAR(45) NOT NULL COMMENT 'name of the interviewee',
+  `last_name_interviewee` VARCHAR(45) NOT NULL,
+  `first_name_interviewer` VARCHAR(45) NULL COMMENT 'name of the interviewer of interviewers',
+  `last_name_interviewer` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL COMMENT 'location of the interview',
   `date` DATE NOT NULL,
   `context` VARCHAR(45) NULL COMMENT 'context in which the interview was made\n',

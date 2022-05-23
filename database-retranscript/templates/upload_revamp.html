@@ -1,32 +1,76 @@
 <!doctype html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
 <html lang="en">
     <title>Transcription</title>
-    <h1>Choose a file</h1>
+    <h1 align="center">Audio File Transcription</h1>
     <form method=post enctype=multipart/form-data>
     <!--Interview-->
-      <label for="audio">Choose an audio file to transcript:</label> <br>
-      <input type=file name=audio accept=".wav"> <br>
+        <div class="container">
+          <label for="audio">Choose an audio file to transcript:</label> <br>
+          <input class="form-control" type=file name=audio accept=".wav"> <br>
+        </div>
+
     <!--Technical MetaData-->
-      <label for="json">Choose the related MediaInfo file:</label> <br>
-      <input type=file name=json accept=".json"> <br>
+        <div class="container">
+          <label for="json">Choose the related MediaInfo file:</label> <br>
+          <input class="form-control" type=file name=json accept=".json"> <br>
+        </div>
+
     <!--Descriptive MetaData-->
-      <label for="interviewee">Name Interviewee:</label> <br>
-      <input type=text id="interviewee" name="interviewee"> <br>
-      <label for="interviewer">Name Interviewer:</label> <br>
-      <input type=text id="interviewer" name=interviewer> <br>
-      <label for="location">Location of the interview:</label> <br>
-      <input type=text id="location" name=location> <br>
-      <label for="Idate">Date of the interview:</label> <br>
-      <input type=date id="Idate" name=Idate> <br>
-      <label for="context">Context of the interview:</label> <br>
-      <textarea id="context" name="context" rows="10" cols="75"></textarea> <br>
+        <div class="container">
+          <label for="interviewee">Firstname Interviewee:</label> <br>
+          <input  class="form-control" type=text id="fn_interviewee" name="fn_interviewee">
+        </div>
+        <div class="container">
+          <label for="interviewee">Lastname Interviewee:</label> <br>
+          <input  class="form-control" type=text id="ln_interviewee" name="ln_interviewee">
+        </div>
+        <div class="container">
+          <label for="gender_interviewee">Gender Interviewee:</label> <br>
+          <input  class="form-control" type=text id="gender_interviewee" name="gender_interviewee"> <br>
+        </div>
+
+        <div class="container">
+          <label for="fn_interviewer">Firstname Interviewer:</label> <br>
+          <input  class="form-control" type=text id="fn_interviewer" name=fn_interviewer>
+        </div>
+        <div class="container">
+          <label for="ln_interviewee">Lastname Interviewee:</label> <br>
+          <input  class="form-control" type=text id="ln_interviewer" name="ln_interviewer">
+        </div>
+        <div class="container">
+          <label for="gender_interviewer">Gender Interviewer:</label> <br>
+          <input  class="form-control" type=text id="gender_interviewer" name="gender_interviewer"> <br>
+        </div>
+
+        <div class="container">
+          <label for="location">Location of the interview:</label> <br>
+          <input  class="form-control" type=text id="location" name=location> <br>
+        </div>
+
+        <div class="container">
+          <label for="Idate">Date of the interview:</label> <br>
+          <input class="form-control" type=date id="Idate" name=Idate> <br>
+        </div>
+
+        <div class="container">
+          <label for="context">Context of the interview:</label> <br>
+          <textarea class="form-control" id="context" name="context" rows="10" cols="75"></textarea> <br>
+        </div>
     <!--Technical MetaData-->
-      <label for="language">Language of the interview:</label> <br>
-      <select id="language" name="language">
-          <option value="fr_FR">French</option>
-          <option value="en_US">English (US)</option>
-      </select>
+        <div class="container">
+          <label for="language">Language of the interview:</label> <br>
+          <select class="form-select" id="language" name="language">
+              <option value="fr_FR">French</option>
+              <option value="en_US">English (US)</option>
+          </select>
+        </div> <br> <br>
 
+        <div class="container">
+            <input class="form-control" type=submit value=Transcribe>
+        </div> <br> <br>
 
-      <input type=submit value=Transcribe>
     </form>

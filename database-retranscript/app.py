@@ -7,6 +7,7 @@ from google.cloud import storage
 import asyncio
 import datetime
 from pathlib import Path
+import json
 
 
 AUDIO_EXTENSIONS = {'wav'}
@@ -131,8 +132,9 @@ def insert_interview(text, transcription, audio):
             print("MySQL connection is closed")
 
 
-def insert_metadata(name_interviewee, name_interviewer, location, date, context, file_name, audio_length, file_format,
-                    language, mediainfo):
+def insert_metadata(fname_interviewee,lname_interviewee, gender_interviewee, fname_interviewer,lname_interviewer,
+                    gender_interviewer, location, date, context, file_name, audio_length, file_format, language,
+                    mediainfo):
     print("Inserting Meta Data")
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -143,9 +145,11 @@ def insert_metadata(name_interviewee, name_interviewer, location, date, context,
 
         cursor = connection.cursor()
 
-        sql_insert_descriptive = """ INSERT INTO descriptive_metadata (id, name_interviewee, name_interviewer, 
-        location, date, context) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s)"""
-        insert_descriptive_data = (name_interviewee, name_interviewer, location, date, context)
+        sql_insert_descriptive = """ INSERT INTO descriptive_metadata (id, first_name_interviewee,
+         last_name_interviewee, gender_interviewee, first_name_interviewer, last_name_interviewer, gender_interviewer,
+         location, date, context) VALUES (LAST_INSERT_ID(), %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        insert_descriptive_data = (fname_interviewee, lname_interviewee, gender_interviewee, fname_interviewer,
+                                   lname_interviewer, gender_interviewer, location, date, context)
         result_descriptive = cursor.execute(sql_insert_descriptive, insert_descriptive_data)
 
         sql_insert_technical = """INSERT INTO technical_metadata (id, file_name, file_length, format, language,
@@ -176,15 +180,19 @@ def upload_file():
             return redirect(request.url)
 
         if 'json' not in request.files:
-            print('missing audio file')
+            print('missing json file')
             flash('No file part')
             return redirect(request.url)
 
         file = request.files['audio']
         minfo = request.files['json']
         language = request.form['language']
-        name_interviewee = request.form['interviewee']
-        name_interviewer = request.form['interviewer']
+        fname_interviewee = request.form['fn_interviewee']
+        lname_interviewee = request.form['ln_interviewee']
+        gender_interviewee = request.form['gender_interviewee']
+        fname_interviewer = request.form['fn_interviewer']
+        lname_interviewer = request.form['ln_interviewer']
+        gender_interviewer = request.form['gender_interviewer']
         location = request.form['location']
         form_date = request.form.get('Idate')
         date = datetime.datetime.strptime(form_date, '%Y-%m-%d')
@@ -205,48 +213,19 @@ def upload_file():
             minfo_name = secure_filename(minfo.filename)
             Path('./uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
             app.config['FOLDER_PATH'] = Path('./uploads/' + filename.split('.')[0]).as_posix()
+            file.stream.seek(0)
             file.save(os.path.join(app.config['FOLDER_PATH'], filename))
-            file.save(os.path.join(app.config['FOLDER_PATH'], minfo_name))
+            minfo.stream.seek(0)
+            minfo.save(os.path.join(app.config['FOLDER_PATH'], minfo_name))
             filepath = app.config['FOLDER_PATH'] + '/' + filename
             jsonpath = app.config['FOLDER_PATH'] + '/' + minfo_name
 
             insert_interview(results, results, filepath)
-            insert_metadata(name_interviewee, name_interviewer, location, date, context, filename, duration,
+            insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fname_interviewer,
+                            lname_interviewer, gender_interviewer, location, date, context, filename, duration,
                             file_format, language, jsonpath)
-            # redirect(url_for('transcriptions/' + select_interview()))
 
     return render_template('upload_revamp.html')
-
-
-@app.route('/transcriptions/<date>/<name>', methods=['GET', 'POST'])
-def update_text(interview_id):
-    def select_interview():
-        print("Retrieving interview ID")
-        interview_name = request.form('interview_search')
-        try:
-            connection = mysql.connector.connect(host='localhost',
-                                                 port='8889',
-                                                 user='root',
-                                                 password='root',
-                                                 database='mydb')
-
-            cursor = connection.cursor()
-            sql_select_interview = """SELECT MAX(id) FROM interview"""
-            selected_interview = cursor.execute(sql_select_interview)
-
-            connection.commit()
-            return selected_interview
-
-        except mysql.connector.Error as error:
-            print("Failed inserting BLOB data into MySQL table {}".format(error))
-
-        finally:
-            if connection.is_connected():
-                cursor.close()
-                connection.close()
-                print("MySQL connection is closed")
-    interview_id = request.args.get('id')
-    return render_template('transcription.html')
 
 
 if __name__ == '__main__':

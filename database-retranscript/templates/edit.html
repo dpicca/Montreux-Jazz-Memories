@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% include 'navbar.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+    <br><br>
+    <br><br>
+    <form method=post enctype=multipart/form-data>
+        <div class="container">
+            <textarea class="form-control" id="text_edit" name="text_edit"> {{ data }} </textarea> <br>
+        </div>
+        <div class="container">
+            <input class="btn btn-outline-primary" type="submit" id="edit" name="edit" value="Edit">
+        </div>
+    </form>
+</body>
+</html>

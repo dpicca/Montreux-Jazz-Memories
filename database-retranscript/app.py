@@ -105,6 +105,33 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in AUDIO_EXTENSIONS
 
 
+def edit_interview(text, id):
+    print("Inserting new transcription to database")
+    try:
+        connection = mysql.connector.connect(host='localhost',
+                                             port='8889',
+                                             user='root',
+                                             password='root',
+                                             database='mydb')
+
+        cursor = connection.cursor()
+        sql_edit_interview = """UPDATE interview SET text = %s WHERE id = %s"""
+        insert_edited_data = (text, id)
+        result_edit = cursor.execute(sql_edit_interview, insert_edited_data)
+
+        connection.commit()
+        print("Edit successfully uploaded to database", result_edit)
+
+    except mysql.connector.Error as error:
+        print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+
+
 def insert_interview(text, transcription, audio):
     print("Inserting Audio file and its transcription to interview table")
     try:
@@ -132,7 +159,7 @@ def insert_interview(text, transcription, audio):
             print("MySQL connection is closed")
 
 
-def insert_metadata(fname_interviewee,lname_interviewee, gender_interviewee, fname_interviewer,lname_interviewer,
+def insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fname_interviewer,lname_interviewer,
                     gender_interviewer, location, date, context, file_name, audio_length, file_format, language,
                     mediainfo):
     print("Inserting Meta Data")
@@ -170,8 +197,8 @@ def insert_metadata(fname_interviewee,lname_interviewee, gender_interviewee, fna
             print("MySQL connection is closed")
 
 
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
+@app.route('/transcript', methods=['GET', 'POST'])
+def transcript():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'audio' not in request.files:
@@ -232,10 +259,10 @@ def upload_file():
                             lname_interviewer, gender_interviewer, location, date, context, filename, duration,
                             file_format, language, jsonpath)
 
-    return render_template('transcription_page.html')
+    return render_template('transcript.html')
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def search():
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -255,16 +282,45 @@ def search():
                            " descriptive_metadata.id")
             # boucle for pour récupérer les valeurs et les afficher
             connection.commit()
-            data = cursor.fetchall()
+            fetched_data = cursor.fetchall()
+            results = len(fetched_data)
+            data = []
+            i = 0
+            while i < results:
+                result_dict = {
+                    'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
+                    'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
+                    'Date': fetched_data[i][4],
+                    'Location': fetched_data[i][5],
+                    'Context': fetched_data[i][6],
+                    'Transcription': fetched_data[i][8]
+                }
+                data.append(result_dict)
+                i += 1
+
             # all in the search box will return all the tuples
-            if len(data) == 0 and research == 'all':
+            if len(fetched_data) == 0 and research == 'all':
                 cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
                                " last_name_interviewer, date, location, context, audio, transcription from"
                                " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
                                " descriptive_metadata.id")
                 connection.commit()
-                data = cursor.fetchall()
-            return render_template('search.html', data=data)
+                fetched_data = cursor.fetchall()
+                results = len(fetched_data)
+                data = []
+                i = 0
+                while i < results:
+                    result_dict = {
+                            'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
+                            'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
+                            'Date': fetched_data[i][4],
+                            'Location': fetched_data[i][5],
+                            'Context': fetched_data[i][6],
+                            'Transcription': fetched_data[i][8]
+                    }
+                    data.append(result_dict)
+                    i += 1
+            return render_template('search.html', data=data, results=results)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -275,6 +331,66 @@ def search():
             connection.close()
             print("MySQL connection is closed")
     return render_template('search.html')
+
+
+@app.route('/display')
+def display():
+    try:
+        connection = mysql.connector.connect(host='localhost',
+                                             port='8889',
+                                             user='root',
+                                             password='root',
+                                             database='mydb')
+
+        cursor = connection.cursor(buffered=True)
+        # Retrieve text from database
+        cursor.execute("SELECT text from interview")
+        connection.commit()
+        data = cursor.fetchall()
+        # Must replace 1 by the chosen interview ID
+        return render_template('display.html', data=str(data[1])[2:-3])
+
+    except mysql.connector.Error as error:
+        print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+    return render_template('display.html')
+
+
+@app.route('/display/edit', methods=['GET', 'POST'])
+def edit_page():
+    try:
+        connection = mysql.connector.connect(host='localhost',
+                                             port='8889',
+                                             user='root',
+                                             password='root',
+                                             database='mydb')
+
+        cursor = connection.cursor(buffered=True)
+        # Retrieve text from database
+        cursor.execute("SELECT text from interview")
+        connection.commit()
+        data = cursor.fetchall()
+        # TODO: change id to var
+        id = 2
+        if request.method == 'POST':
+            text = request.form['text_edit']
+            edit_interview(text, id)
+        return render_template('edit.html', data=str(data[id-1])[2:-3])
+
+    except mysql.connector.Error as error:
+        print("Failed inserting BLOB data into MySQL table {}".format(error))
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL connection is closed")
+    return render_template('edit.html')
 
 
 if __name__ == '__main__':

@@ -1,26 +1,30 @@
 <!-- Search Bar -->
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-
-        scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    </head>
-    <body>
-        <form method=post enctype="multipart/form-data">
-            <br><br><br><br>
-            <div class="container">
-                <input class="form-control" type=text placeholder="Search by name" name=name> <br>
-                <input class="form-control" type=submit value=Search>
-            </div>
-        </form>
-        <p></p>
-        {% for item in data %}
-            <tr>
-                <td> {{item}}</td>
-                </br>
-            </tr>
-        {% endfor %}
-    </body>
-</html>
+{% include 'navbar.html' %}
+
+{% block search %}
+    <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        </head>
+        <body>
+            <form method=post enctype="multipart/form-data">
+                <br><br><br><br>
+                <div class="container">
+                    <input class="form-control" type=text placeholder="Search by name" name=name> <br>
+                    <input class="form-control" type=submit value=Search>
+                </div>
+            </form>
+            <br><br>
+
+            <div>{{ results }} results found</div>
+            <p></p>
+            {% for item in data %}
+                <div class="container">
+                    <div class="form-control"> {{item}}</div>
+                    </br>
+                </div>
+            {% endfor %}
+        </body>
+    </html>
+{% endblock %}

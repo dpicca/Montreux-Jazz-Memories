@@ -276,9 +276,13 @@ def search():
             # Search name of file
             # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                           " last_name_interviewer, date, location, interview.id from"
-                           " descriptive_metadata, interview where descriptive_metadata.first_name_interviewee like %s or descriptive_metadata.first_name_interviewer like %s",
-                           (interview, interview))
+                           " last_name_interviewer, descriptive_metadata.date, location, id from"
+                           " descriptive_metadata where descriptive_metadata.first_name_interviewee like %s or"
+                           " descriptive_metadata.first_name_interviewer like %s or"
+                           " descriptive_metadata.last_name_interviewer like %s or"
+                           " descriptive_metadata.last_name_interviewee like %s or"
+                           " descriptive_metadata.location like %s",
+                           (interview, interview, interview, interview, interview))
             # For loop to get values and display them
             connection.commit()
             fetched_data = cursor.fetchall()

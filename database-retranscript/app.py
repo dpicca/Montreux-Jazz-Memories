@@ -272,60 +272,32 @@ def search():
 
         cursor = connection.cursor(buffered=True)
         if request.method == "POST":
-            research = request.form['name']
+            interview = request.form['interview']
             # Search name of file
             # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                           " last_name_interviewer, date, location, context, audio, transcription, interview.id from"
-                           " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
-                           " descriptive_metadata.id")
+                           " last_name_interviewer, date, location, interview.id from"
+                           " descriptive_metadata, interview where descriptive_metadata.first_name_interviewee like %s or descriptive_metadata.first_name_interviewer like %s",
+                           (interview, interview))
             # For loop to get values and display them
             connection.commit()
             fetched_data = cursor.fetchall()
+            print(fetched_data)
             results = len(fetched_data)
             data = []
             id_list = []
             i = 0
             while i < results:
-                id = fetched_data[i][9]
+                id = fetched_data[i][6]
                 result_dict = {
                     'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
                     'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
                     'Date': fetched_data[i][4],
                     'Location': fetched_data[i][5],
-                    # 'Context': fetched_data[i][6],
-                    # 'Transcription': fetched_data[i][8]
                 }
                 id_list.append(id)
                 data.append(result_dict)
                 i += 1
-
-            """
-            # all in the search box will return all the tuples
-            if len(fetched_data) == 0 and research == 'all':
-                cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                               " last_name_interviewer, date, location, context, audio, transcription, interview.id from"
-                               " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
-                               " descriptive_metadata.id")
-                connection.commit()
-                fetched_data = cursor.fetchall()
-                results = len(fetched_data)
-                data = []
-                id_list = []
-                i = 0
-                while i < results:
-                    id = fetched_data[i][9]
-                    result_dict = {
-                            'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
-                            'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
-                            'Date': fetched_data[i][4],
-                            'Location': fetched_data[i][5],
-                            # 'Context': fetched_data[i][6],
-                            # 'Transcription': fetched_data[i][8]
-                    }
-                    id_list.append(id)
-                    data.append(result_dict)
-                    i += 1"""
 
             return render_template('search.html', data=zip(data, id_list), results=results)
 

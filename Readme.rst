@@ -1,5 +1,5 @@
 ######################################
-Spécification Montreux Jazz
+Montreux Jazz Memories
 ######################################
 
 .. image:: images/image001.png
@@ -59,13 +59,11 @@ Créer une base de données SQL, un sytème de transcription de fichiers audios 
 
 .. image:: images/
 
-* Upload un fichier audio.
+* Charger un fichier audio.
 
 * Remplir les données liées à l'audio.
 
 * Bouton Transcribe permet de lancer la transcription de l'audio et rajouter le nouvel interview traité dans la base de données.
-
-* 
 
 
 2.5 Tests

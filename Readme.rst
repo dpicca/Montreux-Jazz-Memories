@@ -2,7 +2,7 @@
 Spécification Montreux Jazz
 ######################################
 
-.. image:: images/MJM_RGB_Black_10x10cm.ai
+.. image:: images/image001.png
 
 1 Introduction
 **************

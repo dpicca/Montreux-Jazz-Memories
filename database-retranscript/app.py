@@ -276,7 +276,7 @@ def search():
             # Search name of file
             # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                           " last_name_interviewer, date, location, context, audio, transcription from"
+                           " last_name_interviewer, date, location, context, audio, transcription, interview.id from"
                            " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
                            " descriptive_metadata.id")
             # For loop to get values and display them
@@ -284,42 +284,50 @@ def search():
             fetched_data = cursor.fetchall()
             results = len(fetched_data)
             data = []
+            id_list = []
             i = 0
             while i < results:
+                id = fetched_data[i][9]
                 result_dict = {
                     'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
                     'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
                     'Date': fetched_data[i][4],
                     'Location': fetched_data[i][5],
-                    'Context': fetched_data[i][6],
-                    'Transcription': fetched_data[i][8]
+                    # 'Context': fetched_data[i][6],
+                    # 'Transcription': fetched_data[i][8]
                 }
+                id_list.append(id)
                 data.append(result_dict)
                 i += 1
 
+            """
             # all in the search box will return all the tuples
             if len(fetched_data) == 0 and research == 'all':
                 cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                               " last_name_interviewer, date, location, context, audio, transcription from"
+                               " last_name_interviewer, date, location, context, audio, transcription, interview.id from"
                                " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
                                " descriptive_metadata.id")
                 connection.commit()
                 fetched_data = cursor.fetchall()
                 results = len(fetched_data)
                 data = []
+                id_list = []
                 i = 0
                 while i < results:
+                    id = fetched_data[i][9]
                     result_dict = {
                             'Interviewee': str(fetched_data[i][0]) + ' ' + str(fetched_data[i][1]),
                             'Interviewer': str(fetched_data[i][2]) + ' ' + str(fetched_data[i][3]),
                             'Date': fetched_data[i][4],
                             'Location': fetched_data[i][5],
-                            'Context': fetched_data[i][6],
-                            'Transcription': fetched_data[i][8]
+                            # 'Context': fetched_data[i][6],
+                            # 'Transcription': fetched_data[i][8]
                     }
+                    id_list.append(id)
                     data.append(result_dict)
-                    i += 1
-            return render_template('search.html', data=data, results=results)
+                    i += 1"""
+
+            return render_template('search.html', data=zip(data, id_list), results=results)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -332,8 +340,8 @@ def search():
     return render_template('search.html')
 
 
-@app.route('/display')
-def display():
+@app.route('/display-id=<id>')
+def display(id):
     try:
         connection = mysql.connector.connect(host='localhost',
                                              port='8889',
@@ -346,8 +354,8 @@ def display():
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
-        # Must replace 1 by the chosen interview ID
-        return render_template('display.html', data=str(data[1])[2:-3])
+
+        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -360,8 +368,8 @@ def display():
     return render_template('display.html')
 
 
-@app.route('/display/edit', methods=['GET', 'POST'])
-def edit_page():
+@app.route('/edit-id=<id>', methods=['GET', 'POST'])
+def edit_page(id):
     try:
         connection = mysql.connector.connect(host='localhost',
                                              port='8889',
@@ -374,12 +382,10 @@ def edit_page():
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
-        # TODO: change id to var
-        id = 2
         if request.method == 'POST':
             text = request.form['text_edit']
             edit_interview(text, id)
-        return render_template('edit.html', data=str(data[id-1])[2:-3])
+        return render_template('edit.html', data=str(data[int(id)-1])[2:-3])
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

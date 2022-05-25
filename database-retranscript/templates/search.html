@@ -6,6 +6,7 @@
     <html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>MJM Transcript</title>
         </head>
         <body>
             <form method=post enctype="multipart/form-data">
@@ -19,9 +20,10 @@
 
             <div class="container">{{ results }} results found</div>
             <p></p>
-            {% for item in data %}
+            {% for item, id in data %}
                 <div class="container">
-                    <div class="form-control"> {{item}}</div>
+                    <div onclick="location.href='/display-id={{ id }}';" style="cursor: pointer;" class="form-control">
+                        {{ id }}: {{item}}</div>
                     </br>
                 </div>
             {% endfor %}

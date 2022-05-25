@@ -1,13 +1,13 @@
 from flask import *
-import os
-from werkzeug.utils import secure_filename
-import mysql.connector
 from google.cloud import speech_v1
 from google.cloud import storage
+from pathlib import Path
+from werkzeug.utils import secure_filename
 import asyncio
 import datetime
-from pathlib import Path
 import json
+import mysql.connector
+import os
 
 
 AUDIO_EXTENSIONS = {'wav'}
@@ -59,7 +59,6 @@ async def upload_audio(bucket_name, source_file_name, destination_blob_name):
     return destination_blob_name
 
 
-# async useful or not?
 async def speech_to_text_google(file, language, filename, minfo_channels):
     # uri is a string
     # Instantiates a client
@@ -274,13 +273,13 @@ def search():
         cursor = connection.cursor(buffered=True)
         if request.method == "POST":
             research = request.form['name']
-            # search name of file
+            # Search name of file
             # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
                            " last_name_interviewer, date, location, context, audio, transcription from"
                            " descriptive_metadata, interview where interview.id = descriptive_metadata.id group by"
                            " descriptive_metadata.id")
-            # boucle for pour récupérer les valeurs et les afficher
+            # For loop to get values and display them
             connection.commit()
             fetched_data = cursor.fetchall()
             results = len(fetched_data)

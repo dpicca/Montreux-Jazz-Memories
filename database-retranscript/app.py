@@ -95,7 +95,6 @@ async def speech_to_text_google(file, language, filename, minfo_channels):
 
     await delete_blob("montreux_test", file_name)
 
-    # TODO: return transcription as text
     return transcription
 
 
@@ -274,7 +273,6 @@ def search():
         if request.method == "POST":
             interview = request.form['interview']
             # Search name of file
-            # TODO : récupérer infos dans plusieurs tables (transcription, nom etc...)
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
                            " last_name_interviewer, descriptive_metadata.date, location, id from"
                            " descriptive_metadata where descriptive_metadata.first_name_interviewee like %s or"

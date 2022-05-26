@@ -78,6 +78,7 @@ def transcript():
             interaction.insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fname_interviewer,
                             lname_interviewer, gender_interviewer, location, date, context, filename, duration,
                             file_format, language, jsonpath)
+        return render_template('search.html')
 
     return render_template('transcript.html')
 
@@ -93,6 +94,8 @@ def search():
 
         cursor = connection.cursor(buffered=True)
         if request.method == "POST":
+            if request.form['interview'] == '':
+                return render_template('search.html')
             interview = request.form['interview']
             # Search name of file
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"

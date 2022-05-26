@@ -284,7 +284,6 @@ def search():
             # For loop to get values and display them
             connection.commit()
             fetched_data = cursor.fetchall()
-            print(fetched_data)
             results = len(fetched_data)
             data = []
             id_list = []

@@ -23,7 +23,11 @@
             {% for item, id in data %}
                 <div class="container">
                     <div onclick="location.href='/display-id={{ id }}';" style="cursor: pointer;" class="form-control">
-                        {{ id }}: {{item}}</div>
+                        {{ id }} .
+                        {% for key in item %}
+                            <strong>{{ key }}</strong> : {{item[key]}} |
+                        {% endfor %}
+                    </div>
                     </br>
                 </div>
             {% endfor %}

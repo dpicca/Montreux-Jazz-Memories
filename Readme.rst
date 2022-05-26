@@ -9,7 +9,7 @@ Montreux Jazz Memories
 
 1.1 But du projet
 =================
-Créer une base de données SQL, un sytème de transcription de fichiers audios ainsi qu'une interface pour intéragir entre les deux.
+Créer une base de données SQL, un sytème de transcription de fichiers audios wav ainsi qu'une interface pour intéragir entre les deux.
 
 1.2 Aperçu des étapes
 =====================
@@ -17,7 +17,7 @@ Créer une base de données SQL, un sytème de transcription de fichiers audios 
 * Remise et présentation du projet: 1er juin 2022
 
 1.3 Equipe et responsabilités
-==============================
+=============================
 
 * Zakari Rabet (`Zakari-Yacine.Rabet@unil.ch`_):
 .. _Zakari-Yacine.Rabet@unil.ch: mailto:Zakari-Yacine.Rabet@unil.ch
@@ -50,12 +50,19 @@ Créer une base de données SQL, un sytème de transcription de fichiers audios 
 2.1 Dépendances
 ===============
 
-* 
+* Se référer au fichier requirements.txt
 
-* 
+* MySQL 5.7.24
+
+* MAMP
+
+* Python 3.8 ou 3.9
+
+* API Google Cloud Speech
+
 
 2.2 Fonctionnalités
-=============================
+===================
 
 .. image:: images/
 
@@ -72,19 +79,16 @@ Créer une base de données SQL, un sytème de transcription de fichiers audios 
 TODO
 
 3. Installation/User guide
-*********
-
-3.1 Version alpha
-=================
-* L'interface graphique est complètement construite.
-* Les fonctionnalités minimales sont prises en charge par le logiciel et ont été testées.
-
-3.2 Remise et présentation
 ==========================
-* Les fonctionnalités principales sont complétement prises en charge par le logiciel.
-* La documentation du logiciel est complète.
-* Les fonctionnalités principales (et, le cas échéant, optionnelles) sont implémentées et ont été testées.
+
+* Installer MAMP sur son appareil
+* Lancer les serveurs dans MAMP
+* Accéder à PHPmyadmin depuis MAMP
+* Copier - coller le contenu du fichier "MJM database.sql" dans phpmyadmin et l'exécuter 
+* Ouvrir l'application 
+* Installer le fichier "requirements.txt"
+* Lancer l'application
 
 4. Infrastructure
 =================
-Le projet est disponible sur GitHub à l'adresse: TODO
+Le projet est disponible sur GitHub à l'adresse: https://github.com/Bawoup/Montreux-Jazz-Memories.git

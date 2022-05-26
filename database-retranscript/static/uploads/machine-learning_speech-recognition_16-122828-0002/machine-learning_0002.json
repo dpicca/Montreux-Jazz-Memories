@@ -1,0 +1,44 @@
+{
+"creatingLibrary": {
+"name": "MediaInfoLib",
+"version": "22.03",
+"url": "https://mediaarea.net/MediaInfo"
+},
+"media": {
+"@ref": "C:\\Users\\rabet\\OneDrive\\Documents\\UNIL\\3e_Lettres\\Informatique\\Montreux Jazz Memories\\machine-learning_speech-recognition_16-122828-0002.wav",
+"track": [
+{
+"@type": "General",
+"AudioCount": "1",
+"FileExtension": "wav",
+"Format": "Wave",
+"FileSize": "92878",
+"Duration": "2.900",
+"OverallBitRate_Mode": "CBR",
+"OverallBitRate": "256215",
+"StreamSize": "78",
+"File_Created_Date": "UTC 2022-03-16 15:50:40.527",
+"File_Created_Date_Local": "2022-03-16 17:50:40.527",
+"File_Modified_Date": "UTC 2022-03-16 15:50:40.713",
+"File_Modified_Date_Local": "2022-03-16 17:50:40.713",
+"Encoded_Application": "Lavf58.22.100"
+},
+{
+"@type": "Audio",
+"Format": "PCM",
+"Format_Settings_Endianness": "Little",
+"Format_Settings_Sign": "Signed",
+"CodecID": "1",
+"Duration": "2.900",
+"BitRate_Mode": "CBR",
+"BitRate": "256000",
+"Channels": "1",
+"SamplingRate": "16000",
+"SamplingCount": "46400",
+"BitDepth": "16",
+"StreamSize": "92800",
+"StreamSize_Proportion": "0.99916"
+}
+]
+}
+}

@@ -15,7 +15,7 @@ JSON_EXTENSION = {'json'}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'DataBasic$'
-app.config['UPLOAD_FOLDER'] = './uploads'
+app.config['UPLOAD_FOLDER'] = './static/uploads'
 
 
 def get_file_uri(file_name, bucket_name):
@@ -244,8 +244,8 @@ def transcript():
         results = asyncio.run(speech_to_text_google(file, language, filename, minfo_channels))
         if file and allowed_file(file.filename):
             minfo_name = secure_filename(minfo.filename)
-            Path('./uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
-            app.config['FOLDER_PATH'] = Path('./uploads/' + filename.split('.')[0]).as_posix()
+            Path('./static/uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
+            app.config['FOLDER_PATH'] = Path('./static/uploads/' + filename.split('.')[0]).as_posix()
             file.stream.seek(0)
             file.save(os.path.join(app.config['FOLDER_PATH'], filename))
             minfo.stream.seek(0)
@@ -330,8 +330,11 @@ def display(id):
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
+        cursor.execute("SELECT audio from interview")
+        connection.commit()
+        audio = cursor.fetchall()
 
-        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id)
+        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id, audio=str(audio[int(id)-1][0])[2:-1])
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

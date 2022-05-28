@@ -186,6 +186,9 @@ def edit_page(id):
         if request.method == 'POST':
             text = request.form['text_edit']
             interaction.edit_interview(text, id)
+            cursor.execute("SELECT text from interview")
+            connection.commit()
+            data = cursor.fetchall()
         return render_template('edit.html', data=str(data[int(id)-1])[2:-3])
 
     except mysql.connector.Error as error:

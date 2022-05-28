@@ -8,14 +8,31 @@
 </head>
 <body>
     <br><br>
-    <br><br>
+    <br><br>    <br><h1 align="center">Interview</h1> <br><br>
     <div class="container">
+        <div class="form-control">
+            <strong>Interviewee</strong> : {{metadata['Interviewee']}}
+        </div>
+        <div class="form-control">
+            <strong>Interviewer</strong> : {{metadata['Interviewer']}}
+        </div>
+        <div class="form-control">
+            <strong>Location</strong> : {{metadata['Location']}}
+        </div>
+        <div class="form-control">
+            <strong>Date</strong> : {{metadata['Date']}}
+        </div>
+        <div class="form-control">
+            <strong>Context</strong> : {{metadata['Context']}}
+        </div>
+        <br>
+        <div class="form-control">
+            <strong>Transcription</strong> : {{data}}
+        </div>
+        <br>
         <audio controls controlsList="nodownload">
             <source src="{{ audio }}">
         </audio>
-        <div class="form-control">
-            {{data}}
-        </div>
     </div> <br>
     <form action="edit-id={{ id }}">
         <div class="container">

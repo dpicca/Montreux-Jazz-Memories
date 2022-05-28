@@ -155,8 +155,20 @@ def display(id):
         cursor.execute("SELECT audio from interview")
         connection.commit()
         audio = cursor.fetchall()
+        cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
+                       " last_name_interviewer, descriptive_metadata.date, location, context from descriptive_metadata")
+        connection.commit()
+        metadata = cursor.fetchall()
+        print(metadata)
+        metadata_dict = {
+            'Interviewee': str(metadata[int(id)-1][0]) + ' ' + str(metadata[int(id)-1][1]),
+            'Interviewer': str(metadata[int(id)-1][2]) + ' ' + str(metadata[int(id)-1][3]),
+            'Date': metadata[int(id)-1][4],
+            'Location': metadata[int(id)-1][5],
+            'Context': metadata[int(id)-1][6],
+        }
 
-        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id, audio=str(audio[int(id)-1][0])[2:-1])
+        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id, audio=str(audio[int(id)-1][0])[2:-1], metadata=metadata_dict)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -183,13 +195,16 @@ def edit_page(id):
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
+        cursor.execute("SELECT audio from interview")
+        connection.commit()
+        audio = cursor.fetchall()
         if request.method == 'POST':
             text = request.form['text_edit']
             interaction.edit_interview(text, id)
             cursor.execute("SELECT text from interview")
             connection.commit()
             data = cursor.fetchall()
-        return render_template('edit.html', data=str(data[int(id)-1])[2:-3])
+        return render_template('edit.html', data=str(data[int(id)-1])[2:-3], audio=str(audio[int(id)-1][0])[2:-1])
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

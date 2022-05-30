@@ -92,7 +92,7 @@ def insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fn
         result_technical = cursor.execute(sql_insert_technical, insert_technical_data)
 
         connection.commit()
-        print("Transcription and audio file successfully uploaded to database",result_descriptive, result_technical)
+        print("Transcription and audio file successfully uploaded to database", result_descriptive, result_technical)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

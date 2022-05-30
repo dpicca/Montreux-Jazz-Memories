@@ -225,8 +225,8 @@ def edit_page(id):
             cursor.execute("SELECT text from interview")
             connection.commit()
             data = cursor.fetchall()
-            return render_template('display.html', data=str(data[int(id) - 1])[2:-3], id=id,
-                                   audio=str(audio[int(id) - 1][0])[2:-1], metadata=metadata_dict)
+            return redirect(url_for('display', data=str(data[int(id) - 1])[2:-3], id=id,
+                                    audio=str(audio[int(id) - 1][0])[2:-1], metadata=metadata_dict))
         return render_template('edit.html', data=str(data[int(id)-1])[2:-3], audio=str(audio[int(id)-1][0])[2:-1])
 
     except mysql.connector.Error as error:

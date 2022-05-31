@@ -100,7 +100,7 @@ def search():
             if request.form['interview'] == '':
                 return render_template('search.html')
             interview = request.form['interview']
-            # Search for file inforamtion
+            # Search for file information
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
                            " last_name_interviewer, descriptive_metadata.date, location, id from"
                            " descriptive_metadata where descriptive_metadata.first_name_interviewee like %s or"
@@ -164,7 +164,6 @@ def display(id):
                        " last_name_interviewer, descriptive_metadata.date, location, context from descriptive_metadata")
         connection.commit()
         metadata = cursor.fetchall()
-        print(metadata)
         metadata_dict = {
             'Interviewee': str(metadata[int(id)-1][0]) + ' ' + str(metadata[int(id)-1][1]),
             'Interviewer': str(metadata[int(id)-1][2]) + ' ' + str(metadata[int(id)-1][3]),
@@ -205,19 +204,6 @@ def edit_page(id):
         cursor.execute("SELECT audio from interview")
         connection.commit()
         audio = cursor.fetchall()
-        # Retrieve metadata from database
-        cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
-                       " last_name_interviewer, descriptive_metadata.date, location, context from descriptive_metadata")
-        connection.commit()
-        metadata = cursor.fetchall()
-        print(metadata)
-        metadata_dict = {
-            'Interviewee': str(metadata[int(id) - 1][0]) + ' ' + str(metadata[int(id) - 1][1]),
-            'Interviewer': str(metadata[int(id) - 1][2]) + ' ' + str(metadata[int(id) - 1][3]),
-            'Date': metadata[int(id) - 1][4],
-            'Location': metadata[int(id) - 1][5],
-            'Context': metadata[int(id) - 1][6],
-        }
 
         if request.method == 'POST':
             text = request.form['text_edit']

@@ -4,11 +4,13 @@ AUDIO_EXTENSIONS = {'wav'}
 
 
 def allowed_file(filename):
+    """Sets the only accepted extension as .wav"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in AUDIO_EXTENSIONS
 
 
 def edit_interview(text, id):
+    """Edits the text saved in the database"""
     print("Inserting new transcription to database")
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -36,6 +38,7 @@ def edit_interview(text, id):
 
 
 def insert_interview(text, transcription, audio):
+    """Insert a new interview in the database"""
     print("Inserting Audio file and its transcription to interview table")
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -65,6 +68,7 @@ def insert_interview(text, transcription, audio):
 def insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fname_interviewer,lname_interviewer,
                     gender_interviewer, location, date, context, file_name, audio_length, file_format, language,
                     mediainfo):
+    """Inserts metadata linked to the interview"""
     print("Inserting Meta Data")
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -88,7 +92,7 @@ def insert_metadata(fname_interviewee, lname_interviewee, gender_interviewee, fn
         result_technical = cursor.execute(sql_insert_technical, insert_technical_data)
 
         connection.commit()
-        print("Transcription and audio file successfully uploaded to database",result_descriptive, result_technical)
+        print("Transcription and audio file successfully uploaded to database", result_descriptive, result_technical)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

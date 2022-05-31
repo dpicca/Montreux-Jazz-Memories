@@ -9,6 +9,11 @@
 <body>
     <br><br>
     <br><br>
+    <div class="container">
+    <audio controls controlsList="nodownload">
+        <source src="{{ audio }}">
+    </audio>
+    </div>
     <form method=post enctype=multipart/form-data>
         <div class="container">
             <textarea class="form-control" id="text_edit" name="text_edit"> {{ data }} </textarea> <br>

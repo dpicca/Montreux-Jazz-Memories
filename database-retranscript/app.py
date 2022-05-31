@@ -20,7 +20,7 @@ app.config['UPLOAD_FOLDER'] = './static/uploads'
 @app.route('/transcript', methods=['GET', 'POST'])
 def transcript():
     if request.method == 'POST':
-        # check if the post request has the file part
+        # Checks if the post request has the appropriate files
         if 'audio' not in request.files:
             print('missing audio file')
             flash('No file part')
@@ -55,14 +55,17 @@ def transcript():
         # Number of recording channels
         minfo_channels = read_minfo['media']['track'][1]['Channels']
 
-        # if user does not select file, browser also
+        # If user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('Missing file')
             return redirect(request.url)
-        # "en_US" is supposed to be replaced by a language selection on the web page
+        # Name of the uploaded audio file
         filename = secure_filename(file.filename)
+        # Runs the transcription
         results = asyncio.run(transcription.speech_to_text_google(file, language, filename, minfo_channels))
+
+        # Save files in the appropriate location
         if file and interaction.allowed_file(file.filename):
             minfo_name = secure_filename(minfo.filename)
             Path('./static/uploads/' + filename.split('.')[0]).mkdir(parents=True, exist_ok=True)
@@ -97,7 +100,7 @@ def search():
             if request.form['interview'] == '':
                 return render_template('search.html')
             interview = request.form['interview']
-            # Search name of file
+            # Search for file information
             cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
                            " last_name_interviewer, descriptive_metadata.date, location, id from"
                            " descriptive_metadata where descriptive_metadata.first_name_interviewee like %s or"
@@ -152,11 +155,25 @@ def display(id):
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
+        # Retrieve audio from database
         cursor.execute("SELECT audio from interview")
         connection.commit()
         audio = cursor.fetchall()
+        # Retrieve metadata from database
+        cursor.execute("SELECT first_name_interviewee, last_name_interviewee, first_name_interviewer,"
+                       " last_name_interviewer, descriptive_metadata.date, location, context from descriptive_metadata")
+        connection.commit()
+        metadata = cursor.fetchall()
+        metadata_dict = {
+            'Interviewee': str(metadata[int(id)-1][0]) + ' ' + str(metadata[int(id)-1][1]),
+            'Interviewer': str(metadata[int(id)-1][2]) + ' ' + str(metadata[int(id)-1][3]),
+            'Date': metadata[int(id)-1][4],
+            'Location': metadata[int(id)-1][5],
+            'Context': metadata[int(id)-1][6],
+        }
 
-        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id, audio=str(audio[int(id)-1][0])[2:-1])
+        return render_template('display.html', data=str(data[int(id)-1])[2:-3], id=id,
+                               audio=str(audio[int(id)-1][0])[2:-1], metadata=metadata_dict)
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))
@@ -183,10 +200,16 @@ def edit_page(id):
         cursor.execute("SELECT text from interview")
         connection.commit()
         data = cursor.fetchall()
+        # Retrieve audio from database
+        cursor.execute("SELECT audio from interview")
+        connection.commit()
+        audio = cursor.fetchall()
+
         if request.method == 'POST':
             text = request.form['text_edit']
             interaction.edit_interview(text, id)
-        return render_template('edit.html', data=str(data[int(id)-1])[2:-3])
+            return redirect(url_for('display', id=id))
+        return render_template('edit.html', data=str(data[int(id)-1])[2:-3], audio=str(audio[int(id)-1][0])[2:-1])
 
     except mysql.connector.Error as error:
         print("Failed inserting BLOB data into MySQL table {}".format(error))

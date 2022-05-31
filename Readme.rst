@@ -68,7 +68,7 @@ Create a transcription system for audio wav files, an SQL database and an interf
 2.2 Fonctionnalités
 ===================
 
-.. image:: images/interface1.png
+.. image:: images/Interface1.png
 
 * Charger un fichier audio/Load an audio file.
 
@@ -76,11 +76,11 @@ Create a transcription system for audio wav files, an SQL database and an interf
 
 * Effectuer la transcription et la stocker dans la base de données/Execute the transcription and store it in the database.
 
-.. image:: images/interface2.png
+.. image:: images/Interface2.png
 
 * Rechercher les transcriptions existantes dans la base de données/Search for existing transcripts in the database.
 
-.. image:: images/interface3.png
+.. image:: images/Interface3.png
 
 * Éditer les transcriptions/Edit transcripts.
 
